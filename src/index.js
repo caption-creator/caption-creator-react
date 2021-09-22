@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './icons/css/uicons-regular-rounded.css'
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
