@@ -5,12 +5,12 @@ import Container from './Container'
 const Wrapper = styled.div`
   height: 60px;
   border-bottom: 1px solid #EEEEEE;
-  background-color: #007AFF;
+  background-color: #FFFFFF;
 `
 
 const Logo = styled.p`
   font-weight: 900;
-  color: #FFFFFF;
+  color: #007AFF;
   cursor: pointer;
 `
 
@@ -20,7 +20,7 @@ const Spacer = styled.div`
 
 const MenuButton = styled.div`
   cursor: pointer;
-  color: #FFFFFF;
+  color: #007AFF;
 `
 
 const MenuIcon = styled.i`
@@ -43,10 +43,13 @@ const MenuContainer = styled.div`
   right: 0;
   width: 100%;
   max-width: 300px;
-  height: 400px;
-  background-color: #F2F2F2;
+  background-color: #FFFFFF;
   z-index: 10px;
   border: 1px solid #CCCCCC;
+`
+
+const I = styled.i`
+  align-self: center;
 `
 
 const Header = () => {
@@ -64,7 +67,27 @@ const Header = () => {
         </MenuButton>
         {openMenu &&
           <MenuContainer>
-            MenuContents...
+            <div onClick={() => window.location.href="/"} style={{padding: 20, fontSize: 14, borderBottom: '1px solid #CCC', display: 'flex', width:'calc(100% - 40px)', cursor: 'pointer'}}>
+              <p style={{margin: 0}}>홈</p>
+              <Spacer />
+              <I className="fi fi-rr-angle-right" />
+            </div>
+            <div onClick={() => window.location.href="/upload"} style={{padding: 20, fontSize: 14, borderBottom: '1px solid #CCC', display: 'flex', width:'calc(100% - 40px)', cursor: 'pointer'}}>
+              <p style={{margin: 0}}>AI 피드 자동작성</p>
+              <Spacer />
+              <I className="fi fi-rr-angle-right" />
+            </div>
+            <div onClick={() => window.location.href="/mypage"} style={{padding: 20, fontSize: 14, borderBottom: '1px solid #CCC', display: 'flex', width:'calc(100% - 40px)', cursor: 'pointer'}}>
+              <p style={{margin: 0}}>나의 인스타그램</p>
+              <Spacer />
+              <I className="fi fi-rr-angle-right" />
+            </div>
+            <div onClick={() => window.location.href="/usage"} style={{padding: 20, fontSize: 14, borderBottom: '1px solid #CCC', display: 'flex', width:'calc(100% - 40px)', cursor: 'pointer'}}>
+              <p style={{margin: 0}}>실시간 사용 현황</p>
+              <Spacer />
+              <I className="fi fi-rr-angle-right" />
+            </div>
+
           </MenuContainer>
         }
       </HeaderWrapper>
