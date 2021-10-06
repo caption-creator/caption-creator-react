@@ -66,6 +66,11 @@ const PreviewImg = styled.img`
   height: 100%;
 `;
 
+const TypeWarning = styled.p`
+  color: #ff1744;
+  transition: 0.24s ease-in-out;
+`;
+
 const UploadContainer = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -107,11 +112,12 @@ const UploadContainer = () => {
   return (
     <Wrapper {...getRootProps({ isDragActive, isDragAccept, isDragReject })}>
       <input {...getInputProps()} />
-      {selectedFiles.file !== "" ? (
-        <ThumbsContainer>{thumbs}</ThumbsContainer>
-      ) : (
+      {!isDragActive && selectedFiles.length === 0 && (
         <UploadText>이 곳을 클릭하거나 사진을 끌어 넣으세요.</UploadText>
       )}
+      {isDragAccept && <ThumbsContainer>{thumbs}</ThumbsContainer>}
+      {isDragReject && <TypeWarning>파일 형식이 맞지 않아요</TypeWarning>}
+      <ThumbsContainer>{thumbs}</ThumbsContainer>
     </Wrapper>
   );
 };
