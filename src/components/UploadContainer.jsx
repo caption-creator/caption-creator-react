@@ -1,56 +1,116 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDropzone } from "react-dropzone";
+
+const GetColor = (props) => {
+  if (props.isDragAccept) {
+    return "#00e676";
+  }
+  if (props.isDragReject) {
+    return "#ff1744";
+  }
+  if (props.isDragActive) {
+    return "#2196f3";
+  }
+  return "#eeeeee";
+};
 
 const Wrapper = styled.div`
-  border: 2px dashed #565656;
-  padding: 20px;
-  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-style: dashed;
+  border-color: ${(props) => GetColor(props)};
+  border-width: 2px;
+  border-radius: 2px;
+  background-color: #fafafa;
+  outline: none;
+  transition: border 0.24s ease-in-out;
+  padding: 20px;
+  height: 200px;
 `;
 
-const UploadText = styled.label`
+const UploadText = styled.p`
   margin: 0px;
   font-size: 14px;
   color: #565656;
 `;
 
+const ThumbsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 16;
+`;
+
+const Thumb = styled.div`
+  display: inline-flex;
+  border: 1px solid #eaeaea;
+  margin-bottom: 8;
+  margin-right: 8;
+  width: 100;
+  height: 100;
+  padding: 4;
+  box-sizing: border-box;
+`;
+
+const ThumbInner = styled.div`
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+`;
+
 const PreviewImg = styled.img`
+  display: block;
   width: 50px;
-  height: 50px;
+  height: 100%;
 `;
 
 const UploadContainer = () => {
-  const [selectedFile, setSelectedFile] = useState({
-    file: "",
-    previewURL: "",
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
+    accept: "image/*",
+    onDrop: (acceptedFiles) => {
+      setSelectedFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      );
+    },
   });
-  const fileChangedHandler = (event) => {
-    event.preventDefault();
-    const reader = new FileReader();
-    const file = event.target.files[0];
-    reader.onloadend = () => {
-      setSelectedFile({
-        file: file,
-        previewURL: reader.result,
-      });
-    };
-    reader.readAsDataURL(file);
-    console.log(file);
-  };
+
+  const thumbs = selectedFiles.map((file) => (
+    <Thumb key={file.name}>
+      <ThumbInner>
+        <PreviewImg src={file.preview} />
+      </ThumbInner>
+    </Thumb>
+  ));
+
+  useEffect(
+    () => () => {
+      // Make sure to revoke the data uris to avoid memory leaks
+      selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    },
+    [selectedFiles]
+  );
 
   return (
-    <Wrapper>
-      <UploadText>이 곳을 클릭하거나 사진을 끌어 넣으세요.</UploadText>
-      <input
-        type="file"
-        accept="image/jpg,impge/png,image/jpeg"
-        name="uploadImg"
-        onChange={fileChangedHandler}
-      />
-      {selectedFile.file && (
-        <PreviewImg alt="uploaded image" src={selectedFile.previewURL} />
+    <Wrapper {...getRootProps({ isDragActive, isDragAccept, isDragReject })}>
+      <input {...getInputProps()} />
+      {selectedFiles.file !== "" ? (
+        <ThumbsContainer>{thumbs}</ThumbsContainer>
+      ) : (
+        <UploadText>이 곳을 클릭하거나 사진을 끌어 넣으세요.</UploadText>
       )}
     </Wrapper>
   );
