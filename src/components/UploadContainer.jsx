@@ -1,6 +1,7 @@
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
+import { UploadContext } from "../providers/Upload";
 
 const GetColor = (props) => {
   if (props.isDragAccept) {
@@ -72,7 +73,7 @@ const TypeWarning = styled.p`
 `;
 
 const UploadContainer = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const { selectedFiles, setSelectedFiles } = useContext(UploadContext)
 
   const {
     getRootProps,

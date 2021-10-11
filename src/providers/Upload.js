@@ -6,16 +6,16 @@ import React, { createContext } from "react";
   prop-drilling 이슈를 해결합니다.
 */
 export const UploadContext = createContext({
-  "uploadImage"     : [],
-  "setUploadImage"  : () => {},
+  "selectedFiles"     : [],
+  "setSelectedFiles"  : () => {},
 });
 
 const UploadProvider = ({ children }) => {
-  const [uploadImage, setUploadImage] = React.useState([]);
+  const [selectedFiles, setSelectedFiles] = React.useState([]);
 
   const value = {
-    "uploadImage"     : uploadImage,
-    "setUploadImage"  : setUploadImage
+    "selectedFiles"     : selectedFiles,
+    "setSelectedFiles"  : setSelectedFiles
   }
 
   return (
