@@ -7,6 +7,7 @@ const DEVICE_PADDING = 20
 const Div = styled.div`
   max-width: calc(${DEVICE_MAX_WIDTH}px + ${DEVICE_PADDING * 2}px);
   padding: ${DEVICE_PADDING}px;
+  margin: 0px auto;
 `
 
 const Container = (props) => {
