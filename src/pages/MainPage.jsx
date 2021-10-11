@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import Container from '../components/Container';
 import styled from 'styled-components';
-import { Grid } from '@material-ui/core';
 import UploadContainer from '../components/UploadContainer';
 import { UploadContext } from '../providers/Upload';
+import FeedWriteContainer from '../components/FeedWriteContainer';
 
 const Title = styled.p`
   font-size: 16px;
@@ -13,21 +13,9 @@ const Title = styled.p`
   margin-bottom: 10px;
 `
 
-const MyContentWrapper = styled.div`
-  height: 500px;
-  overflow: auto;
-  margin-bottom: 20px;
-`
-
-const MainPage = () => {
-  const { selectedFiles } = useContext(UploadContext)
-
+const TestRealTimeViewContainer = () => {
   return (
-    <Container>
-      <div style={{marginBottom: 20}}>
-        <UploadContainer />
-      </div>
-      <Title>실시간 사용 현황</Title>
+    <div>
       {["", "", ""].map((item, idx) => {
         return (
           <div key={idx} style={{background: 'rgba(0, 122, 255, 0.1)', borderRadius: 10, padding: 20, fontSize: 14, marginBottom: 20}}>
@@ -49,6 +37,39 @@ const MainPage = () => {
           </div>
         )
       })}
+    </div>
+  )
+}
+
+const MainPage = () => {
+  const { selectedFiles } = useContext(UploadContext)
+
+  const render = () => {
+    if(selectedFiles.length === 0){
+      return (
+        <div>
+          <Title>실시간 사용 현황</Title>
+          <TestRealTimeViewContainer />
+        </div>
+        
+      )
+    }else{
+      return (
+        <div>
+          <Title>피드 업로드</Title>
+          <FeedWriteContainer />
+        </div>
+        
+      )
+    }
+  }
+
+  return (
+    <Container>
+      <div style={{marginBottom: 20}}>
+        <UploadContainer />
+      </div>
+      {render()}
     </Container>
   )
 }
