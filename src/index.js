@@ -5,8 +5,13 @@ import './icons/css/uicons-regular-rounded.css'
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import UploadProvider from './providers/Upload';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <UploadProvider>
+    <App />
+  </UploadProvider>, 
+  document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

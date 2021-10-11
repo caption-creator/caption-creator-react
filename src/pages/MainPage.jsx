@@ -18,8 +18,6 @@ const MyContentWrapper = styled.div`
   margin-bottom: 20px;
 `
 
-
-
 const MainPage = () => {
 
   return (

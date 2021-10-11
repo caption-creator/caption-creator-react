@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   transition: border 0.24s ease-in-out;
   padding: 20px;
   height: 200px;
+  cursor: pointer;
 `;
 
 const UploadText = styled.p`
@@ -62,8 +63,7 @@ const ThumbInner = styled.div`
 
 const PreviewImg = styled.img`
   display: block;
-  width: 50px;
-  height: 100%;
+  height: 200px;
 `;
 
 const TypeWarning = styled.p`
