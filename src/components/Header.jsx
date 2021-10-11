@@ -4,6 +4,7 @@ import Container from './Container'
 
 const Wrapper = styled.div`
   height: 60px;
+  padding: 0px 20px;
   border-bottom: 1px solid #EEEEEE;
   background-color: #FFFFFF;
 `
@@ -34,7 +35,9 @@ const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0px 20px;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0px auto;
 `
 
 const MenuContainer = styled.div`
