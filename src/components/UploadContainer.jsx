@@ -134,7 +134,7 @@ const UploadContainer = () => {
   return (
     <Wrapper 
       {...getRootProps({ isDragActive, isDragAccept, isDragReject })} 
-      style={{height: size}} 
+      style={{height: size, maxHeight: '50vh'}} 
       ref={imageRef} 
     >
       <input 
