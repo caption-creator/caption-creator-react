@@ -23,6 +23,9 @@ const MyPage = () => {
   return (
     <Container>
       <div style={{ padding: 20 }}>
+        <h1>@{user_id} 's IG Feed</h1>
+        <br />
+        <br />
         <Grid container spacing={1}>
           {posts &&
             posts.map((post) => <SingleIGPost key={post.id} post={post} />)}
