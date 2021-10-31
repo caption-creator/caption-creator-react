@@ -15,13 +15,14 @@ const SingleIGPost = ({ post }) => {
   return (
     <Grid item xs={4}>
       <img
-        src={image}
+        src={`https://cdn.captioncreator.workers.dev/${image}`}
         ref={boxRef}
         style={{
           width: "100%",
           height: size,
           backgroundSize: "cover",
           borderRadius: 5,
+          cursor: "pointer",
         }}
         alt={caption}
       />
