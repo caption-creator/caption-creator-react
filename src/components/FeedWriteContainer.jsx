@@ -2,10 +2,11 @@ import React, { Fragment } from "react";
 import InputTextArea from "./InputTextArea";
 import styled from 'styled-components'
 import KeywordBox from "./KeywordBox";
-import { postOCR } from "../services/ai";
+import { postOCR, postGPT } from "../services/ai";
 import S3 from 'react-aws-s3';
 import { UploadContext } from "../providers/Upload";
 import { tempConfig } from "../services";
+import { CircularProgress } from "@material-ui/core";
 
 const FeedWrapper = styled.div`
   position: relative;
@@ -51,6 +52,7 @@ const FeedWriteContainer = () => {
 
   const [state, setState] = React.useState({
     loadOCR : false,
+    loadGPT : false,
   })
 
   const [data, setData] = React.useState({
@@ -68,6 +70,26 @@ const FeedWriteContainer = () => {
         keywords : resOCR.data
       })
     }
+  }
+
+  const generateGPT = async() => {
+    setState({
+      ...state,
+      loadGPT : true
+    })
+    const id = window.localStorage.getItem("auth_id");
+    const pw = window.localStorage.getItem("auth_pw");
+    const res = await postGPT(data.keywords, id, pw);
+    if(res.status === 201){
+      setData({
+        ...data, 
+        feed: res.data
+      })
+    }
+    setState({
+      ...state,
+      loadGPT : false
+    })
   }
 
   React.useEffect(() => {
@@ -135,10 +157,14 @@ const FeedWriteContainer = () => {
         deleteKeyword={deleteKeyword}
       />
       <FeedWrapper>
-        <InputTextArea name="feed" onChange={handleData} />
+        <InputTextArea name="feed" onChange={handleData} value={data.feed} />
         {data.feed.length === 0 &&
-          <GenerateButton>
-            AI 피드 생성하기
+          <GenerateButton onClick={generateGPT}>
+            {state.loadGPT ? 
+              <CircularProgress style={{color: "#FFF"}} />
+            :
+              "AI 피드 생성하기"
+            }
           </GenerateButton>
         }
       </FeedWrapper>

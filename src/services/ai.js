@@ -1,7 +1,7 @@
 import { apiInstance } from './index';
 
-export const postOCR = (url) => {
-  return apiInstance.post("/ai/image", {
+export const postOCR = async(url) => {
+  return await apiInstance.post("/ai/image", {
     imageLink : url
   })
   .then(res => {
@@ -13,3 +13,19 @@ export const postOCR = (url) => {
     return err.response;
   })
 } 
+
+export const postGPT = async(keywords, id, pw) => {
+  return await apiInstance.post("/ai/writing", {
+    keywordList : keywords,
+    id: id,
+    pwd: pw,
+  })
+  .then(res => {
+    console.log(res);
+    return res;
+  })
+  .catch(err => {
+    console.log(err);
+    return err.response;
+  })
+}

@@ -1,7 +1,7 @@
 import { apiInstance } from './index';
 
-export const postLogin = ({ id, pwd }) => {
-  return apiInstance.post("/auth", {
+export const postLogin = async({ id, pwd }) => {
+  return await apiInstance.post("/auth", {
     id, pwd
   })
   .then(res => {
