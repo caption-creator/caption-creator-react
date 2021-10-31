@@ -1,4 +1,4 @@
-import { React, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import { UploadContext } from "../providers/Upload";
@@ -27,8 +27,6 @@ const Wrapper = styled.div`
   background-color: #fafafa;
   outline: none;
   transition: border 0.24s ease-in-out;
-  padding: 20px;
-  height: 200px;
   cursor: pointer;
 `;
 
@@ -36,6 +34,10 @@ const UploadText = styled.p`
   margin: 0px;
   font-size: 14px;
   color: #565656;
+  font-weight: 600;
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const ThumbsContainer = styled.div`
@@ -74,7 +76,8 @@ const TypeWarning = styled.p`
 
 const UploadContainer = () => {
   const { selectedFiles, setSelectedFiles } = useContext(UploadContext)
-
+  const imageRef = useRef();
+  const [size, setSize] = useState(0);
   const {
     getRootProps,
     getInputProps,
@@ -103,6 +106,22 @@ const UploadContainer = () => {
   ));
 
   useEffect(
+    () => {
+      if(imageRef.current){
+        setSize(imageRef.current.offsetWidth - 4)
+      }
+      
+      window.addEventListener("resize", () => {
+        if(imageRef.current){
+          setSize(imageRef.current.offsetWidth - 4)
+        }
+      })
+    },
+    [imageRef.current]
+  );
+
+
+  useEffect(
     () => () => {
       // Make sure to revoke the data uris to avoid memory leaks
       selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
@@ -110,9 +129,17 @@ const UploadContainer = () => {
     [selectedFiles]
   );
 
+  
+
   return (
-    <Wrapper {...getRootProps({ isDragActive, isDragAccept, isDragReject })}>
-      <input {...getInputProps()} />
+    <Wrapper 
+      {...getRootProps({ isDragActive, isDragAccept, isDragReject })} 
+      style={{height: size}} 
+      ref={imageRef} 
+    >
+      <input 
+        {...getInputProps()}       
+      />
       {!isDragActive && selectedFiles.length === 0 && (
         <UploadText>이 곳을 클릭하거나 사진을 끌어 넣으세요.</UploadText>
       )}

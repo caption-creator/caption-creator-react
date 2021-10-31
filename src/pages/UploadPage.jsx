@@ -8,7 +8,9 @@ const UploadPage = () => {
 
   return (
     <Container>
-      <UploadContainer />
+      <div style={{marginBottom: 20}}>
+        <UploadContainer />
+      </div>
       <FeedWriteContainer />
     </Container>
   )
