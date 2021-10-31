@@ -1,23 +1,22 @@
 import { Grid } from "@material-ui/core";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Container from "../components/Container";
 import SingleIGPost from "../components/SingleIGPost";
+import { getPost } from "../services/post";
 
 const user_id = window.localStorage.getItem("auth_id");
 const user_pw = window.localStorage.getItem("auth_pw");
 
 const MyPage = () => {
   const [posts, setPosts] = useState(null);
+
+  const initPost = async() => {
+    const res = await getPost(user_id, user_pw);
+    setPosts(res.data);
+  }
+
   useEffect(() => {
-    const getPost = async () => {
-      const res = await axios.get(
-        `http://localhost:4000/feed?id=${user_id}&pwd=${user_pw}`
-      );
-      console.log(res);
-      setPosts(res.data);
-    };
-    getPost();
+    initPost()
   }, []);
 
   return (
