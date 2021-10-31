@@ -1,64 +1,35 @@
-import { Grid } from '@material-ui/core';
-import React from 'react';
-import styled from 'styled-components'
-import Container from '../components/Container';
-import UploadContainer from '../components/UploadContainer';
+import { Grid } from "@material-ui/core";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import Container from "../components/Container";
+import SingleIGPost from "../components/SingleIGPost";
 
-
-const Hint = styled.p`
-  color: #FFFFFF;
-  font-size: 12px;
-  margin: 0px;
-`
-
-
-const GridBox = ({ color }) => {
-  const [size, setSize] = React.useState(0)
-  const boxRef = React.useRef()
-
-  React.useEffect(() => {
-    if(boxRef.current){
-      setSize(boxRef.current.offsetWidth)
-    }
-  }, [boxRef])
-
-  return (
-    <Grid
-      item
-      xs={4} 
-    >
-      <div
-        ref={boxRef}
-        style={{
-          width: '100%', 
-          height: size, 
-          backgroundColor: '#' + Math.round(Math.random() * 0xffffff).toString(16),
-          borderRadius: 5,
-        }}
-      >
-        <div style={{padding: 10}}>
-          <Hint>여기는 본인 사진</Hint>
-          <Hint>클릭 시 정보 출력</Hint>
-        </div>
-        
-      </div>
-      
-    </Grid>
-  )
-}
+const user_id = window.localStorage.getItem("auth_id");
+const user_pw = window.localStorage.getItem("auth_pw");
 
 const MyPage = () => {
+  const [posts, setPosts] = useState(null);
+  useEffect(() => {
+    const getPost = async () => {
+      const res = await axios.get(
+        `http://localhost:4000/feed?id=${user_id}&pwd=${user_pw}`
+      );
+      console.log(res);
+      setPosts(res.data);
+    };
+    getPost();
+  }, []);
+
   return (
     <Container>
-      <div style={{padding: 20}}>
+      <div style={{ padding: 20 }}>
         <Grid container spacing={1}>
-          {["","","","","","","","","","",""].map((item, idx) => {
-            return <GridBox />
-          }) }
+          {posts &&
+            posts.map((post) => <SingleIGPost key={post.id} post={post} />)}
         </Grid>
       </div>
     </Container>
-  )
-}
+  );
+};
 
 export default MyPage;
