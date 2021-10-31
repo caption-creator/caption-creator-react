@@ -2,6 +2,10 @@ import React, { Fragment } from "react";
 import InputTextArea from "./InputTextArea";
 import styled from 'styled-components'
 import KeywordBox from "./KeywordBox";
+import { postOCR } from "../services/ai";
+import S3 from 'react-aws-s3';
+import { UploadContext } from "../providers/Upload";
+import { tempConfig } from "../services";
 
 const FeedWrapper = styled.div`
   position: relative;
@@ -42,12 +46,48 @@ const GenerateButton = styled.button`
 `
 
 const FeedWriteContainer = () => {
+  const { selectedFiles } = React.useContext(UploadContext)
   const [open, setOpen] = React.useState(false)
+
+  const [state, setState] = React.useState({
+    loadOCR : false,
+  })
 
   const [data, setData] = React.useState({
     keywords: [],
     feed : "",
   })
+
+  const uploadImgTemp = async file => {
+    const ReactS3Client = new S3(tempConfig)
+    const resS3 = await ReactS3Client.uploadFile(file, `${Date.now()}`)
+    const resOCR = await postOCR(resS3.location)
+    if(resOCR && resOCR.status === 201){
+      setData({
+        ...data,
+        keywords : resOCR.data
+      })
+    }
+  }
+
+  React.useEffect(() => {
+    (async () => {
+      setState({
+        ...state,
+        loadOCR : true
+      })
+      if(selectedFiles.length > 0){
+        for(const file of selectedFiles){
+          await uploadImgTemp(file)
+        }
+      }
+      setState({
+        ...state,
+        loadOCR : false
+      })
+    })()
+    
+  }, [selectedFiles])
 
   const handleData = event => {
     setData({
@@ -56,9 +96,44 @@ const FeedWriteContainer = () => {
     })
   }
 
+  const handleKeyword = (event, idx) => {
+    const copy = data.keywords
+    copy[idx] = event.target.value
+    setData({
+      ...data,
+      keywords : copy
+    })
+  }
+
+  const addKeyword = () => {
+    setData({
+      ...data,
+      keywords : [
+        ...data.keywords,
+        "키워드"
+      ]
+    })
+  }
+
+  const deleteKeyword = (idx) => {
+    setData({
+      ...data,
+      keywords : [
+        ...data.keywords.slice(0, idx),
+        ...data.keywords.slice(idx + 1),
+      ]
+    })
+  }
+
   return (
     <Fragment>
-      <KeywordBox keywords={["맛집", "맛집스타그램", "GPT3"]} />
+      <KeywordBox 
+        keywords={data.keywords} 
+        isLoading={state.loadOCR}
+        handleKeyword={handleKeyword}
+        addKeyword={addKeyword} 
+        deleteKeyword={deleteKeyword}
+      />
       <FeedWrapper>
         <InputTextArea name="feed" onChange={handleData} />
         {data.feed.length === 0 &&
