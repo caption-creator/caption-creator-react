@@ -59,6 +59,12 @@ const I = styled.i`
 const Header = () => {
   const [openMenu, setOpenMenu] = React.useState(false);
 
+  const logout = () => {
+    window.localStorage.removeItem("auth_id");
+    window.localStorage.removeItem("auth_pw");
+    window.location.href = "/auth";
+  }
+
   return (
     <Wrapper>
       <HeaderWrapper>
@@ -88,6 +94,11 @@ const Header = () => {
               <p style={{margin: 0}}>실시간 사용 현황</p>
               <Spacer />
               <I className="fi fi-rr-angle-right" />
+            </div>
+            <div onClick={logout} style={{padding: 20, fontSize: 14, borderBottom: '1px solid #CCC', display: 'flex', width:'calc(100% - 40px)', cursor: 'pointer'}}>
+              <p style={{margin: 0}}>로그아웃</p>
+              <Spacer />
+              <I className="fi fi-rr-sign-out-alt" />
             </div>
 
           </MenuContainer>

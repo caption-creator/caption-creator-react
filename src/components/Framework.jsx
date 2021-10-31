@@ -8,20 +8,39 @@ const Body = styled.div`
 `
 
 const Framework = props => {
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    //로그인 관련된 처리는 이 곳에서 진행됩니다.
-  }, []);
+    //유저 정보가 없으면 로그인페이지로
+    if(window.location.pathname !== "/auth"){
+      if(!window.localStorage.getItem("auth_id") 
+        || !window.localStorage.getItem("auth_pw"))
+      {
+        window.location.href="/auth"
+      }
+    }
+    setTimeout(() => {
+      setLoading(true)
+    }, 100)
+  }, [])
 
-  return (
-    <div>
-      <Header />
-      <Body>
-        {props.children}
-      </Body>
-      <Footer />
-    </div>
-  )
+  if(loading){
+    return (
+      <div>
+        <Header />
+        <Body>
+          {props.children}
+        </Body>
+        <Footer />
+      </div>
+    )
+  }else{
+    return (
+      <div>loading...</div>
+    )
+  }
+
+  
 }
 
 export default Framework;
