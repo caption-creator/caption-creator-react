@@ -64,13 +64,6 @@ const AuthPage = () => {
   const processLogin = async() => {
     try{
       setLoading(true)
-
-      if(window.location.origin === "http://localhost:3000"){
-        window.localStorage.setItem("auth_id", form.id)
-        window.localStorage.setItem("auth_pw", form.pwd)
-        window.location.href="/"
-        return;
-      }
       
       const res = await postLogin(form)
 
