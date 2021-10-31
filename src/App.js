@@ -3,6 +3,7 @@ import Framework from './components/Framework';
 import MainPage from './pages/MainPage';
 import MyPage from './pages/MyPage';
 import UploadPage from './pages/UploadPage';
+import AuthPage from './pages/AuthPage'
 
 function App() {
   return (
@@ -23,6 +24,11 @@ function App() {
             exact 
             path="/mypage" 
             component={MyPage} 
+          />
+          <Route
+            exact
+            path="/auth"
+            component={AuthPage}
           />
         </Switch>
       </Framework>

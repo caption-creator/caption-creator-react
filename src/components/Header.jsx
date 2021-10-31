@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import Container from './Container'
+
+const img_logo_text_grad = require("../assets/images/logo_text_black.png")
 
 const Wrapper = styled.div`
   height: 60px;
@@ -9,9 +10,9 @@ const Wrapper = styled.div`
   background-color: #FFFFFF;
 `
 
-const Logo = styled.p`
-  font-weight: 900;
-  color: #007AFF;
+const Logo = styled.img`
+  display: block;
+  max-height: 36px;
   cursor: pointer;
 `
 
@@ -61,9 +62,7 @@ const Header = () => {
   return (
     <Wrapper>
       <HeaderWrapper>
-        <Logo>
-          Caption Creater
-        </Logo>
+        <Logo src={img_logo_text_grad.default} onClick={() => window.location.href = "/"} />
         <Spacer />
         <MenuButton onClick={() => setOpenMenu(!openMenu)}>
           <MenuIcon className="fi fi-rr-menu-burger" />

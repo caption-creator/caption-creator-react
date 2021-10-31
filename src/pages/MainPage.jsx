@@ -43,6 +43,16 @@ const TestRealTimeViewContainer = () => {
 
 const MainPage = () => {
   const { selectedFiles } = useContext(UploadContext)
+  
+  React.useEffect(() => {
+    //유저 정보가 없으면 로그인페이지로
+    if(!window.localStorage.getItem("auth_id") 
+      || !window.localStorage.getItem("auth_pw"))
+    {
+      window.location.href="/auth"
+    }
+  }, [])
+
 
   const render = () => {
     if(selectedFiles.length === 0){
