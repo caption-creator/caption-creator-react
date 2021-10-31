@@ -8,7 +8,7 @@ const Input = styled.textarea`
   font-size: 16px;
   font-weight: 600;
   border-radius: 5px;
-  color: ${props => props.focus ? "#565656" : "#CCCCCC"};
+  color: #565656;
   &:focus {
     outline: none;
   }
@@ -23,7 +23,7 @@ const InputWrapper = styled.div`
 const InputLabel = styled.p`
   margin: 0px;
   min-width: 100px;
-  color: ${props => props.focus ? "#565656" : "#CCCCCC"};
+  color: #565656;
   font-size: 16px;
   font-weight: 600;
 `
