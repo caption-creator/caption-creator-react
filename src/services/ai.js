@@ -14,8 +14,8 @@ export const postOCR = async(url) => {
   })
 } 
 
-export const postGPT = async(keywords, id, pw) => {
-  return await apiInstance.post("/ai/writing", {
+export const postGPT = async(keywords, id, pw, type) => {
+  return await apiInstance.post("/ai/writing" + ( type ? "/" + type : "" ), {
     keywordList : keywords,
     id: id,
     pwd: pw,

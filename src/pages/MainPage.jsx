@@ -48,8 +48,7 @@ const MainPage = () => {
     if(selectedFiles.length === 0){
       return (
         <div>
-          <Title>실시간 사용 현황</Title>
-          <TestRealTimeViewContainer />
+
         </div>
         
       )
@@ -59,7 +58,6 @@ const MainPage = () => {
           <Title>피드 업로드</Title>
           <FeedWriteContainer />
         </div>
-        
       )
     }
   }

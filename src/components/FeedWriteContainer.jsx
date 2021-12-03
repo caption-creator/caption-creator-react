@@ -5,8 +5,11 @@ import KeywordBox from "./KeywordBox";
 import { postOCR, postGPT } from "../services/ai";
 import S3 from 'react-aws-s3';
 import { UploadContext } from "../providers/Upload";
-import { tempConfig } from "../services";
+import { apiInstance, tempConfig } from "../services";
 import { CircularProgress } from "@material-ui/core";
+import IG, { IgApiClient } from "instagram-private-api"
+import Resizer from "react-image-file-resizer";
+import axios from "axios";
 
 const FeedWrapper = styled.div`
   position: relative;
@@ -49,6 +52,8 @@ const GenerateButton = styled.button`
 const FeedWriteContainer = () => {
   const { selectedFiles } = React.useContext(UploadContext)
   const [open, setOpen] = React.useState(false)
+  const [img, setImg] = React.useState(null)
+  const [imgUrl, setImgUrl] = React.useState(null)
 
   const [state, setState] = React.useState({
     loadOCR : false,
@@ -60,17 +65,46 @@ const FeedWriteContainer = () => {
     feed : "",
   })
 
+
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        800,
+        800,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "file",
+        800,
+        800
+      );
+    });
+
   const uploadImgTemp = async file => {
-    const ReactS3Client = new S3(tempConfig)
-    const resS3 = await ReactS3Client.uploadFile(file, `${Date.now()}`)
-    const resOCR = await postOCR(resS3.location)
-    if(resOCR && resOCR.status === 201){
-      setData({
-        ...data,
-        keywords : resOCR.data
-      })
+    try{
+      const resizedImg = await resizeFile(file)
+      console.log(resizedImg)
+      const ReactS3Client = new S3(tempConfig)
+      const resS3 = await ReactS3Client.uploadFile(resizedImg, `${Date.now()}`)
+      console.log(resS3)
+      setImg(resizedImg)
+      const resOCR = await postOCR(resS3.location)
+      setImgUrl(resS3.location)
+      if(resOCR && resOCR.status === 201){
+        setData({
+          ...data,
+          keywords : resOCR.data
+        })
+      }
+    }catch(e){
+      console.log(e)
     }
   }
+
 
   const generateGPT = async() => {
     setState({
@@ -79,13 +113,22 @@ const FeedWriteContainer = () => {
     })
     const id = window.localStorage.getItem("auth_id");
     const pw = window.localStorage.getItem("auth_pw");
-    const res = await postGPT(data.keywords, id, pw);
+    const res = await postGPT(data.keywords, id, pw, 1);
+    let str = ""
     if(res.status === 201){
-      setData({
-        ...data, 
-        feed: res.data
-      })
+      str += res.data
     }
+
+    const res2 = await postGPT(data.keywords, id, pw, 2);
+    if(res2.status === 201){
+      str += res2.data
+    }
+
+    setData({
+      ...data, 
+      feed: str
+    })
+
     setState({
       ...state,
       loadGPT : false
@@ -147,6 +190,20 @@ const FeedWriteContainer = () => {
     })
   }
 
+  const handleUpload = async() => {
+    const id = window.localStorage.getItem("auth_id");
+    const pw = window.localStorage.getItem("auth_pw");
+
+    const res = await apiInstance.post("/feed", {
+      id : id,
+      pwd: pw,
+      imageLink : imgUrl,
+      caption: data.feed,
+    })
+
+    console.log(res)
+  }
+
   return (
     <Fragment>
       <KeywordBox 
@@ -172,7 +229,7 @@ const FeedWriteContainer = () => {
         <OpenAIButton onClick={() => setOpen(true)}>
           AI 피드 생성하기
         </OpenAIButton>
-        <UploadButton disabled={data.feed.length === 0 ? true : false} onClick={() => setOpen(true)}>
+        <UploadButton disabled={data.feed.length === 0 ? true : false} onClick={handleUpload}>
           피드 업로드
         </UploadButton>
       </div>
