@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const DEVICE_MAX_WIDTH = 1280;
+const DEVICE_MAX_WIDTH = 960;
 const DEVICE_PADDING = 20
 
 const Div = styled.div`

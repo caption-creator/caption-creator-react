@@ -50,7 +50,7 @@ const MyPage = () => {
       </div>
       <Dialog maxWidth="xs" fullWidth open={current ? true : false} onClose={() => setCurrent(null)}>
         {current &&
-          <div style={{padding: 20}}>    
+          <div style={{padding: 5}}>    
             <img
               src={current.imageList ?
                 `https://cdn.captioncreator.workers.dev/${current.imageList[0]}`
@@ -62,10 +62,11 @@ const MyPage = () => {
                 backgroundSize: "cover",
                 borderRadius: 5,
                 cursor: "pointer",
-                marginBottom: 40
+                marginBottom: 20
               }}
             />
-            <Typography style={{fontSize: 14, color: '#333'}}>
+            <Typography style={{fontSize: 20, fontWeight: 700, marginBottom: 5}}>피드</Typography>
+            <Typography style={{fontSize: 14, color: '#333', lineHeight:'16px', marginBottom: 20}}>
               {current.caption}
             </Typography>
           </div>
@@ -76,7 +77,6 @@ const MyPage = () => {
           <CircularProgress style={{width: 48, height: 48, color: '#007AFF', display:'block', margin: '0px auto'}} />
           <Hint>잠시만 기다려주세요.</Hint>
         </div>
-        
       </Backdrop>
     </Container>
   );

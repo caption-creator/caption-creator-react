@@ -20,10 +20,10 @@ const UploadButton = styled.button`
   font-weight: 900;
   color: #FFFFFF;
   padding: 8px 30px;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
   display: block;
-  width: calc(100% - 60px); 
+  width: calc(100% - 0px); 
 `
 
 
@@ -47,11 +47,47 @@ const GenerateButton = styled.button`
   cursor: pointer;
 `
 
+const FeedSelectContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+`
+
+const GenerateText = styled.p`
+  margin: 0px;
+  font-size: 14px;
+  flex-grow: 1;
+  font-weight: 600;
+  color: #333;
+`
+
+const GenerateWrapper = styled.div`
+  display: flex;
+  border: 1px solid #EEEEEE;
+  border-radius: 5px;
+  padding: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+`
+
+const SelectButton = styled.button`
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  color: #FFF;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+`
+
 const FeedWriteContainer = () => {
   const { selectedFiles } = React.useContext(UploadContext)
   const [open, setOpen] = React.useState(false)
   const [img, setImg] = React.useState(null)
   const [imgUrl, setImgUrl] = React.useState(null)
+  const [generates, setGenerates] = React.useState([])
 
   const [state, setState] = React.useState({
     loadOCR : false,
@@ -112,21 +148,17 @@ const FeedWriteContainer = () => {
     const id = window.localStorage.getItem("auth_id");
     const pw = window.localStorage.getItem("auth_pw");
     const res = await postGPT(data.keywords, id, pw, 1);
-    let str = ""
+    let g = []
     if(res.status === 201){
-      str += res.data
+      g.push(res.data)
     }
 
     const res2 = await postGPT(data.keywords, id, pw, 2);
     if(res2.status === 201){
-      str += res2.data
+      g.push(res2.data)
     }
-
-    setData({
-      ...data, 
-      feed: str
-    })
-
+    setGenerates(g)
+    setOpen(true)
     setState({
       ...state,
       loadGPT : false
@@ -188,6 +220,14 @@ const FeedWriteContainer = () => {
     })
   }
 
+  const setFeed = text => {
+    setOpen(false)
+    setData({
+      ...data,
+      feed : text
+    })
+  }
+
   const handleUpload = async() => {
     const id = window.localStorage.getItem("auth_id");
     const pw = window.localStorage.getItem("auth_pw");
@@ -213,7 +253,7 @@ const FeedWriteContainer = () => {
       />
       <FeedWrapper>
         <InputTextArea name="feed" onChange={handleData} value={data.feed} />
-        {data.feed.length === 0 &&
+        {data.feed.length === 0 && !open &&
           <GenerateButton onClick={generateGPT}>
             {state.loadGPT ? 
               <CircularProgress style={{color: "#FFF"}} />
@@ -222,19 +262,28 @@ const FeedWriteContainer = () => {
             }
           </GenerateButton>
         }
+        {open &&
+          <FeedSelectContainer>
+            <div style={{padding: 10}}>
+              {generates.map((item, idx) => {
+                return (
+                  <GenerateWrapper key={idx}>
+                    <GenerateText>
+                      {item}
+                    </GenerateText>
+                    <SelectButton onClick={() => setFeed(item)}>이 피드 선택</SelectButton>
+                  </GenerateWrapper>
+                )
+              })}
+            </div>
+          </FeedSelectContainer>
+          
+        }
       </FeedWrapper>
       <div style={{display:'flex', gap: 10}}>
-        <OpenAIButton onClick={() => setOpen(true)}>
-          AI 피드 생성하기
-        </OpenAIButton>
         <UploadButton disabled={data.feed.length === 0 ? true : false} onClick={handleUpload}>
           피드 업로드
         </UploadButton>
-      </div>
-      <div onClick={() => setOpen(false)} style={{display: open ? 'block' : 'none', position: 'absolute', top: 40, left: 40, width:'calc(100% - 80px)', height: 'calc(100% - 80px)', backgroundColor: 'rgba(255, 255, 255, 0.92)', border: '1px solid #CCC'}}>
-        <div style={{padding: 20}}>
-          이 곳은 AI 피드 자동 추천 영역입니다.
-        </div>
       </div>
     </Fragment>
   )
