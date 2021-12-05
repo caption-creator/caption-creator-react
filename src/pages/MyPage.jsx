@@ -1,19 +1,32 @@
-import { Dialog, Grid, Typography } from "@material-ui/core";
+import { Dialog, Grid, Typography, Backdrop, CircularProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Container from "../components/Container";
 import SingleIGPost from "../components/SingleIGPost";
 import { getPost } from "../services/post";
+import styled from 'styled-components'
 
 const user_id = window.localStorage.getItem("auth_id");
 const user_pw = window.localStorage.getItem("auth_pw");
 
+const Hint = styled.p`
+  margin: 0px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #888888;
+  font-weight: 600;
+  text-align: center;
+`
+
 const MyPage = () => {
   const [posts, setPosts] = useState(null);
   const [current, setCurrent] = React.useState(null);
+  const [load, setLoad] = React.useState(false)
 
   const initPost = async() => {
+    setLoad(true)
     const res = await getPost(user_id, user_pw);
     setPosts(res.data);
+    setLoad(false)
   }
 
   useEffect(() => {
@@ -52,12 +65,19 @@ const MyPage = () => {
                 marginBottom: 40
               }}
             />
-            <Typography style={{fontSize: 14, lineHeight: 16, color: '#333'}}>
+            <Typography style={{fontSize: 14, color: '#333'}}>
               {current.caption}
             </Typography>
           </div>
         }
       </Dialog>
+      <Backdrop style={{backgroundColor:"rgba(255,255,255, 0.1)"}} open={load}>
+        <div>
+          <CircularProgress style={{width: 48, height: 48, color: '#007AFF', display:'block', margin: '0px auto'}} />
+          <Hint>잠시만 기다려주세요.</Hint>
+        </div>
+        
+      </Backdrop>
     </Container>
   );
 };

@@ -4,6 +4,11 @@ import React from "react";
 
 const ImageWrapper = styled.div`
   position: relative;
+  width: 100%;
+  height: ${props => props.height}px;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
 `
 
 const MultiImageIcon = styled.div`
@@ -23,20 +28,16 @@ const SingleIGPost = ({ post, onClick }) => {
 
   return (
     <Grid item xs={4} md={3}>
-      <ImageWrapper onClick={onClick}>
+      <ImageWrapper ref={boxRef} onClick={onClick} height={size}>
         <img
           src={imageList ?
             `https://cdn.captioncreator.workers.dev/${imageList[0]}`
           :
             `https://cdn.captioncreator.workers.dev/${image}`
           }
-          ref={boxRef}
           style={{
             width: "100%",
-            height: size,
-            backgroundSize: "cover",
-            borderRadius: 5,
-            cursor: "pointer",
+            display: 'block',
           }}
           alt={caption}
         />

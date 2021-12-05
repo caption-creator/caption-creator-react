@@ -7,9 +7,7 @@ import S3 from 'react-aws-s3';
 import { UploadContext } from "../providers/Upload";
 import { apiInstance, tempConfig } from "../services";
 import { CircularProgress } from "@material-ui/core";
-import IG, { IgApiClient } from "instagram-private-api"
 import Resizer from "react-image-file-resizer";
-import axios from "axios";
 
 const FeedWrapper = styled.div`
   position: relative;

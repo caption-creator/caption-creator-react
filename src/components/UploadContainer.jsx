@@ -25,6 +25,7 @@ const Wrapper = styled.div`
   border-width: 2px;
   border-radius: 2px;
   background-color: #fafafa;
+  max-width: 800px;
   outline: none;
   transition: border 0.24s ease-in-out;
   cursor: pointer;
@@ -134,7 +135,7 @@ const UploadContainer = () => {
   return (
     <Wrapper 
       {...getRootProps({ isDragActive, isDragAccept, isDragReject })} 
-      style={{height: size, maxHeight: '50vh'}} 
+      style={{height: size, maxHeight: '800px'}} 
       ref={imageRef} 
     >
       <input 
