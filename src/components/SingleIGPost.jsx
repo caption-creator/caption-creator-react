@@ -11,7 +11,19 @@ const ImageWrapper = styled.div`
 `
 
 const MultiImageIcon = styled.div`
+  
+`
 
+const CCIcon = styled.img`
+  display: block;
+  height: 24px;
+`
+
+const CCIconWrapper = styled.div`
+  position: absolute;
+  top: 10px;
+  left : 10px;
+  background-color: rgba(255, 255, 255, 0.4);
 `
 
 const SingleIGPost = ({ post, onClick }) => {
@@ -57,6 +69,12 @@ const SingleIGPost = ({ post, onClick }) => {
           alt={caption}
         />
         <MultiImageIcon />
+        {createdByCC &&
+          <CCIconWrapper>
+            <CCIcon src={require("../assets/images/logo_text_black.png").default} />
+          </CCIconWrapper>
+        }
+       
       </ImageWrapper>
     </Grid>
   );

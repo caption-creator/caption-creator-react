@@ -26,6 +26,7 @@ const Wrapper = styled.div`
   border-radius: 2px;
   background-color: #fafafa;
   max-width: 800px;
+  margin: 0px auto;
   outline: none;
   transition: border 0.24s ease-in-out;
   cursor: pointer;

@@ -6,7 +6,7 @@ import { postOCR, postGPT } from "../services/ai";
 import S3 from 'react-aws-s3';
 import { UploadContext } from "../providers/Upload";
 import { apiInstance, tempConfig } from "../services";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Typography } from "@material-ui/core";
 import Resizer from "react-image-file-resizer";
 
 const FeedWrapper = styled.div`
@@ -141,6 +141,7 @@ const FeedWriteContainer = () => {
 
 
   const generateGPT = async() => {
+    setOpen(false)
     setState({
       ...state,
       loadGPT : true
@@ -157,6 +158,12 @@ const FeedWriteContainer = () => {
     if(res2.status === 201){
       g.push(res2.data)
     }
+
+    const res3 = await postGPT(data.keywords, id, pw, null);
+    if(res3.status === 201){
+      g.push(res3.data)
+    }
+
     setGenerates(g)
     setOpen(true)
     setState({
@@ -231,6 +238,8 @@ const FeedWriteContainer = () => {
   const handleUpload = async() => {
     const id = window.localStorage.getItem("auth_id");
     const pw = window.localStorage.getItem("auth_pw");
+    setOpen(true)
+    
 
     const res = await apiInstance.post("/feed", {
       id : id,
@@ -238,8 +247,13 @@ const FeedWriteContainer = () => {
       imageLink : imgUrl,
       caption: data.feed,
     })
-
-    console.log(res)
+    if(res && res.data === true){
+      window.alert("업로드에 성공하였습니다.")
+      window.location.href="/mypage"
+    }else{
+      window.alert("업로드에 실패하였습니다. 다시 시도해주세요.")
+    }
+    setOpen(false)
   }
 
   return (
@@ -256,7 +270,7 @@ const FeedWriteContainer = () => {
         {data.feed.length === 0 && !open &&
           <GenerateButton onClick={generateGPT}>
             {state.loadGPT ? 
-              <CircularProgress style={{color: "#FFF"}} />
+              <CircularProgress style={{color: "#FFF", marginTop: 2}} />
             :
               "AI 피드 생성하기"
             }
@@ -267,14 +281,26 @@ const FeedWriteContainer = () => {
             <div style={{padding: 10}}>
               {generates.map((item, idx) => {
                 return (
-                  <GenerateWrapper key={idx}>
-                    <GenerateText>
-                      {item}
-                    </GenerateText>
-                    <SelectButton onClick={() => setFeed(item)}>이 피드 선택</SelectButton>
-                  </GenerateWrapper>
+                  <React.Fragment>
+                    {idx === 0 &&
+                      <Typography style={{fontSize:12, color: '#888'}}>음식 기반 피드 생성</Typography>
+                    }
+                    {idx === 1 &&
+                      <Typography style={{fontSize:12, color: '#888'}}>여행 기반 피드 생성</Typography>
+                    }
+                    {idx === 2 &&
+                      <Typography style={{fontSize:12, color: '#888'}}>내 게시글 기반 피드 생성</Typography>
+                    }
+                    <GenerateWrapper key={idx}>
+                      <GenerateText>
+                        {item}
+                      </GenerateText>
+                      <SelectButton onClick={() => setFeed(item)}>이 피드 선택</SelectButton>
+                    </GenerateWrapper>
+                  </React.Fragment>
                 )
               })}
+              <Typography onClick={generateGPT} style={{fontSize:12, color: '#888', textAlign:'center', cursor: 'pointer'}}>다시 생성하기</Typography>
             </div>
           </FeedSelectContainer>
           

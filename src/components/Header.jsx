@@ -48,7 +48,7 @@ const MenuContainer = styled.div`
   width: 100%;
   max-width: 300px;
   background-color: #FFFFFF;
-  z-index: 10px;
+  z-index: 99px;
   border: 1px solid #CCCCCC;
 `
 

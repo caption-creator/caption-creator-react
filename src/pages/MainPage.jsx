@@ -160,17 +160,19 @@ const MainPage = () => {
           </InfoWrapper>
         </Grid>
       </Grid>
-      <div style={{display: 'flex', width: '100%', alignItems:'center', minHeight: 400, padding: '50px 0px'}}>
-        <div style={{flex: 1}}>
+      <Grid container spacing={2} style={{margin: '50px 0px'}}>
+        <Grid item xs={12} md={6}>
           <UploadContainer />
-        </div>
-        <div style={{flex: 1, display: 'flex', alignItems:'center', justifyContent:'center'}}>
-          <div>
-            <Title style={{fontSize: 24, marginBottom: 40}}>내 피드를 앱 전환 없이 바로 볼 수 있어요!</Title>
-            <Button onClick={() => window.location.href="/mypage"}>내 피드 조회하기</Button>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <div style={{flex: 1, display: 'flex', alignItems:'center', justifyContent:'center', height: '100%'}}>
+            <div>
+              <Title style={{fontSize: 24, marginBottom: 40}}>내 피드를 앱 전환 없이 바로 볼 수 있어요!</Title>
+              <Button onClick={() => window.location.href="/mypage"}>내 피드 조회하기</Button>
+            </div>
           </div>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
       {render()}
     </Container>
   )
