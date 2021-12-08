@@ -99,9 +99,76 @@ const FeedWriteContainer = () => {
     feed : "",
   })
 
+  function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(',')[1]);
 
-  const resizeFile = (file) =>
-    new Promise((resolve) => {
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    //Old Code
+    //write the ArrayBuffer to a blob, and you're done
+    //var bb = new BlobBuilder();
+    //bb.append(ab);
+    //return bb.getBlob(mimeString);
+
+    //New Code
+    return new Blob([ab], {type: mimeString});
+
+
+}
+
+  const handleLoadAvatar = async(file) => {
+    var reader = new FileReader();
+    reader.onload = async(e) => {
+      var img = document.createElement("img");
+      img.onload = async() => {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+  
+        var MAX_WIDTH = 800;
+        var MAX_HEIGHT = 800;
+        var width = img.width;
+        var height = img.height;
+  
+        canvas.width = 800;
+        canvas.height = 800;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, 800, 800);
+        var dataurl = canvas.toDataURL("image/png");
+        
+        const resizedImg = dataURItoBlob(dataurl)
+        const ReactS3Client = new S3(tempConfig)
+        const resS3 = await ReactS3Client.uploadFile(resizedImg, `${Date.now()}`)
+        console.log(resS3)
+        setImg(resizedImg)
+        const resOCR = await postOCR(resS3.location)
+        setImgUrl(resS3.location)
+        if(resOCR && resOCR.status === 201){
+          setData({
+            ...data,
+            keywords : resOCR.data
+          })
+        }
+
+      }
+      img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+
+
+  const resizeFile = (file) => {
+    return new Promise((resolve) => {
       Resizer.imageFileResizer(
         file,
         800,
@@ -110,6 +177,7 @@ const FeedWriteContainer = () => {
         100,
         0,
         (uri) => {
+          console.log(uri)
           resolve(uri);
         },
         "file",
@@ -117,23 +185,11 @@ const FeedWriteContainer = () => {
         800
       );
     });
+  }
 
   const uploadImgTemp = async file => {
     try{
-      const resizedImg = await resizeFile(file)
-      console.log(resizedImg)
-      const ReactS3Client = new S3(resizedImg)
-      const resS3 = await ReactS3Client.uploadFile(resizedImg, `${Date.now()}`)
-      console.log(resS3)
-      setImg(resizedImg)
-      const resOCR = await postOCR(resS3.location)
-      setImgUrl(resS3.location)
-      if(resOCR && resOCR.status === 201){
-        setData({
-          ...data,
-          keywords : resOCR.data
-        })
-      }
+      const resizedImg = handleLoadAvatar(file)
     }catch(e){
       console.log(e)
     }
