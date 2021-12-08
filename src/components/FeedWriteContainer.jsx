@@ -122,7 +122,7 @@ const FeedWriteContainer = () => {
     try{
       const resizedImg = await resizeFile(file)
       console.log(resizedImg)
-      const ReactS3Client = new S3(tempConfig)
+      const ReactS3Client = new S3(resizedImg)
       const resS3 = await ReactS3Client.uploadFile(resizedImg, `${Date.now()}`)
       console.log(resS3)
       setImg(resizedImg)
